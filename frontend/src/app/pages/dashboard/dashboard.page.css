@@ -1,4 +1,10 @@
 
+body, html, * {
+    font-family: 'Roboto', sans-serif ;
+}
+
+
+
 .dashboard {
     background-color: red;
     margin-left: 250px;
@@ -11,12 +17,61 @@ body, html{
     box-sizing: border-box;
 }
 .contentAndHeader{
-    display:flex;
-    flex-direction: column;
+    width: calc(100% - 230px);
     margin:0;
     padding:0;
 }
 .content{
-    background-color: red;
+    margin-top: 120px;
+    height:calc(100vh - 340px);
+    margin-left:245px;
+    padding-bottom:200px;
+    background-color: #f3f4f5;
     width:100%;
 }
+.search{
+    background-color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 10px;
+    width: 250px;
+}
+.search-box {
+    border: none;
+    outline: none;
+    width: 100%;
+    max-width: 200px; 
+}
+
+.toolbar{
+   display:flex;
+   align-items: center;
+   justify-content: space-between;
+   background-color: green ;
+   width:100%;
+   gap: 5px;
+}
+.pagename{
+    font-size:25px;
+    color: #2f6be5;
+    padding-left:40px;
+}
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+  

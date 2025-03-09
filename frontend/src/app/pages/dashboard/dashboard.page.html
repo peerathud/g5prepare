@@ -1,9 +1,38 @@
+<app-sidebar></app-sidebar>
 <div class="main-layout">
-    <!-- <app-sidebar></app-sidebar> -->
+
     <div class="contentAndHeader">
         <app-header></app-header>
         <div class="content">
-            <p>HEllo world</p>
+            <div class="pagename">Users Dashboard</div>
+            <div class="toolbar">
+                <div class="search ">
+                    <span class="material-symbols-outlined">search </span>
+                    <input type="text" class="search-box" placeholder="search">
+                </div>
+
+                <button class="btn-user+">Add user +</button>
+
+                <div class="dropdown">
+                    <button class="dropdown-btn">Sort by ▼</button>
+                    <ul class="dropdown-menu">
+                        <li (click)="1">Name</li>
+                        <li (click)="2">Date</li>
+                        <li (click)="3">Role</li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btn">savesearch ▼</button>
+                    <ul class="dropdown-menu">
+                        <li (click)="1">Name</li>
+                        <li (click)="2">Date</li>
+                        <li (click)="3">Role</li>
+                    </ul>
+                </div>
+                <div class="setting">
+                    <span class="material-symbols-outlined">tune</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

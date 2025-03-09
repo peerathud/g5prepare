@@ -9,7 +9,9 @@ body, html, * {
     background :white;
     height:100vh;
     position:fixed;
-   
+    top:0;
+    left:0;
+   z-index: 999;
 }
 .sidebar li {
     font-size:20px;
@@ -45,8 +47,8 @@ body, html, * {
 
     padding-left:30px;
     font-size:25px;
-    padding-top:30px;
-    padding-bottom:35px;
+    padding-top:45px;
+    padding-bottom:20px;
     font-weight: 400;
   }
 
@@ -67,8 +69,8 @@ body, html, * {
   
 }
 .sidebar .icon {
-  font-size: 24px; /* ✅ ปรับขนาดไอคอน */
-  margin-right: 10px; /* ✅ ให้ไอคอนกับข้อความห่างกัน */
+  font-size: 24px;
+  margin-right: 10px; 
 }
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';

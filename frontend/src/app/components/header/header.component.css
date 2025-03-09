@@ -9,12 +9,13 @@ body, html, * {
     justify-content: space-between;
     align-items: center;
     background-color:  #f3f4f5;
-    position:fixed;
-    width: calc(100% - 300px); 
+     position:fixed;
+    width: calc(100% - 290px);  
     top:0;
-    left:260px;
+    left:253px; 
     padding:40px 20px;
     border-bottom: 1px solid #f3f4f5;
+    z-index:1000;
 }
 
 .header-right{
@@ -26,10 +27,12 @@ body, html, * {
 .header-left h3 {
     font-size: 18px;
     margin:0px;
+    padding-left:20px;
 }
 .header-left p {
     margin:0;
     font-size:14px;
+    padding-left:20px;
     color:gray;
 }
 .notification-icon {
