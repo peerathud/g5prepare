@@ -1,0 +1,83 @@
+body, html, * {
+    font-family: 'Roboto', sans-serif ;
+    
+}
+
+
+.header{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color:  #f3f4f5;
+    position:fixed;
+    width: calc(100% - 300px); 
+    top:0;
+    left:260px;
+    padding:40px 20px;
+    border-bottom: 1px solid #f3f4f5;
+}
+
+.header-right{
+    display:flex;
+    align-items: center;
+    gap:15px;
+    background-color:#f3f4f5;
+}
+.header-left h3 {
+    font-size: 18px;
+    margin:0px;
+}
+.header-left p {
+    margin:0;
+    font-size:14px;
+    color:gray;
+}
+.notification-icon {
+    position: relative;
+    cursor: pointer;
+}
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+.divider{
+    width:1px;
+    height:30px;
+    background-color:gray;
+}
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    background-color: gray;
+    border-radius: 50%;
+}
+.user-profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.user-info{
+    display:flex;
+    flex-direction: column;
+}
+.username {
+    font-weight: bold;
+}
+.role {
+    font-size: 12px;
+    color: gray;
+}
+.icon {
+    font-size: 18px;
+}

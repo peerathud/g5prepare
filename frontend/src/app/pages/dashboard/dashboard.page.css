@@ -1,7 +1,22 @@
 
 .dashboard {
     background-color: red;
-    margin-left: 220px;
-    padding: 20px;
+    margin-left: 250px;
+    padding:20px;
     overflow-y: auto;   
+}
+body, html{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+.contentAndHeader{
+    display:flex;
+    flex-direction: column;
+    margin:0;
+    padding:0;
+}
+.content{
+    background-color: red;
+    width:100%;
 }
