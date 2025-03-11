@@ -11,28 +11,117 @@
                     <input type="text" class="search-box" placeholder="search">
                 </div>
 
-                <button class="btn-user+">Add user +</button>
+                <button class="btn-user">Add user +</button>
 
                 <div class="dropdown">
                     <button class="dropdown-btn">Sort by ▼</button>
                     <ul class="dropdown-menu">
-                        <li (click)="1">Name</li>
-                        <li (click)="2">Date</li>
-                        <li (click)="3">Role</li>
+                        <li (click)="sortBy('Name')">Name</li>
+                        <li (click)="sortBy('Date')">Date</li>
+                        <li (click)="sortBy('Role')">Role</li>
                     </ul>
                 </div>
                 <div class="dropdown">
-                    <button class="dropdown-btn">savesearch ▼</button>
+                    <button class="dropdown-btn">Saved search ▼</button>
                     <ul class="dropdown-menu">
-                        <li (click)="1">Name</li>
-                        <li (click)="2">Date</li>
-                        <li (click)="3">Role</li>
+                        <li (click)="sortBy('Name')">Name</li>
+                        <li (click)="sortBy('Date')">Date</li>
+                        <li (click)="sortBy('Role')">Role</li>
                     </ul>
                 </div>
                 <div class="setting">
                     <span class="material-symbols-outlined">tune</span>
                 </div>
             </div>
+            <div class="list">
+                <div class="headerList">
+                    <p>List User</p>
+                </div>
+                <div class="testHead">
+                    <div class="b1">Name</div>
+                     
+                    <div class="b3">Create Date</div>
+                    <div class="b4">Role</div>
+                    <div class="b5">Action</div>
+                </div>
+                <div class="Table">
+                    <table>
+                        <!-- <thead class="huacolumn">
+                            <tr>
+                                <th class="h1">Name</th>
+                                <th class="space"></th>
+                                <th class="h3">CreateDate</th>
+                                <th class="h4">Role</th>
+                                <th class="h5">Action</th>
+                            </tr>
+                        </thead> -->
+
+                        <tbody class="test">
+
+                            <tr>
+                                <td class="name">
+                                    <span>David Wagner</span>
+                                    <span class="mail">David.Wgmail.com</span>
+                                </td>
+                                <td>
+                                    <button class="btn-role">Super Admin</button>
+                                </td>
+                                <td>24 Otc, 2015</td>
+                                <td>lorem Ipsum </td>
+                                <td>
+                                    <div class="action"><span class="material-symbols-outlined icon">
+                                            border_color
+                                        </span>
+                                        <span class="material-symbols-outlined">
+                                            delete
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="name">
+                                    <span>David Wagner</span>
+                                    <span class="mail">David.Wgmail.com</span>
+                                </td>
+                                <td>
+                                    <button class="btn-role">Super Admin</button>
+                                </td>
+                                <td>24 Otc, 2015</td>
+                                <td>lorem Ipsum </td>
+                                <td>
+                                    <div class="action"><span class="material-symbols-outlined icon">
+                                            border_color
+                                        </span>
+
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="name">
+                                    <span>David Wagner</span>
+                                    <span class="mail">David.Wgmail.com</span>
+                                </td>
+                                <td>
+                                    
+                                    <button class="btn-role ">Super Admin</button>
+                                </td>
+                                <td>24 Otc, 2015</td>
+                                <td>lorem Ipsum </td>
+                                <td>
+                                    <div class="action "><span class="material-symbols-outlined icon">
+                                            border_color
+                                        </span>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
         </div>
     </div>
+
 </div>

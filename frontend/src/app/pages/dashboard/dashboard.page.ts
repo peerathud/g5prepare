@@ -10,4 +10,9 @@ import { HeaderComponent } from "../../components/header/header.component";
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.css'] 
 })
-export class DashboardPage {}
+export class DashboardPage {
+
+  sortBy(sorttype:string){
+
+  }
+}
