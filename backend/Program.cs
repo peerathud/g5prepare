@@ -1,3 +1,7 @@
+using backend.Data;
+using backend.Extensions;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddApplicationServices();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", builder =>
@@ -15,9 +20,20 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+ var connectionString =builder.Configuration.GetConnectionString("DefaultConnection");
+ builder.Services.AddDbContext<AppDbContext>(options=>options.UseSqlServer(connectionString)
 
+ );
 var app = builder.Build();
-
+using (var scope =app.Services.CreateScope())
+{
+    var DbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    if (DbContext.Database.CanConnect()){
+        Console.WriteLine("Database Connected");
+    }else{
+        Console.WriteLine("Failed to Connect Database");
+    }
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
