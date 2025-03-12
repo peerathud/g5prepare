@@ -7,6 +7,9 @@ namespace backend.Extensions{
         public static void AddApplicationServices(this IServiceCollection services){
             // services.AddScoped<UserService>();
             services.AddScoped<HelloService>();
+            services.AddScoped<IMessageService, SMSService>();
+            services.AddScoped<Notification>();
+            services.AddScoped<IRoleService,RoleService>();
         }
     }
 }
