@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using backend.Models;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Configuration.UserSecrets;
 public class UesrService : IUserService
 {
     private readonly AppDbContext _context;
@@ -20,7 +21,12 @@ public class UesrService : IUserService
             if (role == null)
             {
                 throw new Exception("Invalid Role ID");
+
             }
+            Console.WriteLine($"[Service] Received UserID: {addNewUserDTORequest.id}");
+            Console.WriteLine($"[Service] RoleID: {addNewUserDTORequest.roleId}");
+            Console.WriteLine($"[Service] Permissions Count: {addNewUserDTORequest.permissions?.Count}");
+            Console.WriteLine($"[Controller] First Permission ID: {addNewUserDTORequest.permissions.FirstOrDefault()?.permissionsId}");
             //declare permisison for checking
             bool? requestisReadable = addNewUserDTORequest.permissions.FirstOrDefault()?.isReadable;
             bool? requestisWritable = addNewUserDTORequest.permissions.FirstOrDefault()?.isWritable;
@@ -30,6 +36,12 @@ public class UesrService : IUserService
             .Where(cp => cp.roleId == addNewUserDTORequest.roleId)
             .Select(cp => cp.permissionId)
             .FirstOrDefaultAsync();
+            Console.WriteLine($"[Service] PermissionsIdFromDb from Database: {PermissionsIdFromDb}");
+
+            if (PermissionsIdFromDb == null)
+            {
+                throw new Exception("PermissionsId is NULL in Database");
+            }
             //query r w d where permissionId
             var checkPermission = await _context.Permissions.Where(cp => cp.permissionId == PermissionsIdFromDb)
             .Select(cp => new Permissions
@@ -89,15 +101,82 @@ public class UesrService : IUserService
                     permissionId = PermissionsIdFromDb,
                     permissionName = permisisonName,
                 }
-
                 }
-
             };
         }
         catch (Exception ex)
         {
             throw new Exception($"error:{ex.Message}");
         }
+    }
+    public async Task<DeleteUserDTOResponse> DeleteUser(string id)
+    {
+        try
+        {
+            var userId = id;
+            var user = await _context.Users.FirstOrDefaultAsync(user => userId == user.userId);
 
+            if (user == null)
+            {
+                return new DeleteUserDTOResponse
+                {
+                    result = false,
+                    message = "invalid userId"
+                };
+            }
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return new DeleteUserDTOResponse
+            {
+                result = true,
+                message = "User delete successfully"
+            };
+
+        }
+        catch (Exception ex)
+        {
+            return new DeleteUserDTOResponse
+            {
+                result = false,
+                message = $"Unexpected error:{ex.Message}"
+            };
+        }
+    }
+    public async Task<GetUserByIdDTOResponse> GetUserById(string id)
+    {
+        try
+        {
+            var userData = await _context.Users
+            .Include(u => u.Roles)
+            .ThenInclude(u => u.Permissions)
+            .FirstOrDefaultAsync(u => u.userId == id);
+            if (userData == null)
+            {
+                throw new Exception("user not found");
+            }
+            return new GetUserByIdDTOResponse
+            {
+                id = userData.userId,
+                firstName = userData.firstName,
+                LastName = userData.lastName,
+                email = userData.email,
+                phone = userData.phone,
+                role = new RoleResponse
+                {
+                    roleId = userData.roleId,
+                    roleName = userData.username
+                },
+                username = userData.username,
+                permissions = new List<PermissionsResponse> { new PermissionsResponse{
+                    permissionId = userData.Roles.Permissions.permissionId,
+                    permissionName = userData.Roles.Permissions.permissionName
+                }
+            }
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An unexpected error occurred:" + ex.Message);
+        }
     }
 }

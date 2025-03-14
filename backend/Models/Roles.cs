@@ -7,6 +7,7 @@ public partial class Roles{
     public string roleId { get; set; } = string.Empty;
     [Required]
     public string roleName { get; set; }= string.Empty;
+    [Required]
       [ForeignKey("Permissions")]
     public string permissionId { get; set; }
 

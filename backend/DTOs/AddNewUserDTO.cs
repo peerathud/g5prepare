@@ -13,19 +13,19 @@ namespace backend.DTOs{
        public string email { get; set; }  =string.Empty;
        [Required]  
        public string? phone { get; set; }
-       [Required]   
-       public string roleId { get; set; }=string.Empty;
+       
+       public string roleId { get; set; }
        [Required]
        public string username{get; set; }=string.Empty;
        [Required]
        public string password{get; set; }  =string.Empty;
-       [Required]
-       public  List<PermissionRequest> permissions{ get; set; }
+       
+       public  List<PermissionRequest> permissions{ get; set; } =new List<PermissionRequest>();
     }
 
     public class PermissionRequest{
-        [Required]
-        public string permissionsId { get; set; }=string.Empty;
+        
+        public string permissionsId { get; set; }
         public bool isReadable { get; set; }=false;
         [Required]
         public bool isWritable{ get; set; }=false;
