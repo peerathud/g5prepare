@@ -10,6 +10,8 @@ namespace backend.Extensions{
             services.AddScoped<IMessageService, SMSService>();
             services.AddScoped<Notification>();
             services.AddScoped<IRoleService,RoleService>();
+            services.AddScoped<IPermissionService, PermissionService>();
+            services.AddScoped<IUserService, UesrService>();
         }
     }
 }

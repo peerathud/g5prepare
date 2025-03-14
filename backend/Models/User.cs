@@ -6,22 +6,22 @@ namespace backend.Models;
 public partial class Users
 {
     [Key]
-    public string id { get; set; }
+    public string userId { get; set; }= string.Empty;
     [Required]
-    public string username { get; set; }
+    public string username { get; set; }= string.Empty;
     [Required]
-    public string password { get; set; }
+    public string password { get; set; }= string.Empty;
     [Required]
-    public string email { get; set; } 
+    public string email { get; set; } = string.Empty;
     [Required]
-    public string firstName { get; set; } 
+    public string firstName { get; set; } = string.Empty;
     [Required]
-    public string lastName { get; set; } 
+    public string lastName { get; set; } = string.Empty;
 
     public string? phone { get; set; } = null;
     [ForeignKey("Roles")]
     public string roleId { get; set; }
 
-    public virtual Roles Roles { get; set; }
+    public virtual Roles Roles { get; set; } =new Roles();
     
 }

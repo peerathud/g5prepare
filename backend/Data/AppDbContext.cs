@@ -10,4 +10,6 @@ public class AppDbContext:DbContext {
     public DbSet<Users> Users{get; set;} =null!;
     public DbSet<Roles> Roles{get; set;} =null!;    
     
+    public DbSet<Permissions> Permissions{get; set;} =null!;
+    public DbSet<Role_Permissions> Role_Permissions{get; set;} =null!;
     }
