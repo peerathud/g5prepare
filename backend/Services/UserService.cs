@@ -6,6 +6,7 @@ using Microsoft.Identity.Client;
 using backend.Models;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using System.Transactions;
 public class UesrService : IUserService
 {
     private readonly AppDbContext _context;
@@ -15,60 +16,28 @@ public class UesrService : IUserService
     }
     public async Task<AddNewUserDTOResponse> AddNewUser(AddNewUserDTORequest addNewUserDTORequest)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
         try
-        {//check role
+        {
+
+            //check role
             var role = await _context.Roles.FindAsync(addNewUserDTORequest.roleId);
             if (role == null)
             {
                 throw new Exception("Invalid Role ID");
 
             }
+            var permission = await _context.Permissions.FindAsync(addNewUserDTORequest.permissions.FirstOrDefault().permissionsId);
+            if (permission == null)
+            {
+                throw new Exception("Invalid PermissionsId");
+            }
+
             Console.WriteLine($"[Service] Received UserID: {addNewUserDTORequest.id}");
             Console.WriteLine($"[Service] RoleID: {addNewUserDTORequest.roleId}");
             Console.WriteLine($"[Service] Permissions Count: {addNewUserDTORequest.permissions?.Count}");
             Console.WriteLine($"[Controller] First Permission ID: {addNewUserDTORequest.permissions.FirstOrDefault()?.permissionsId}");
-            //declare permisison for checking
-            bool? requestisReadable = addNewUserDTORequest.permissions.FirstOrDefault()?.isReadable;
-            bool? requestisWritable = addNewUserDTORequest.permissions.FirstOrDefault()?.isWritable;
-            bool? requestisDeletable = addNewUserDTORequest.permissions.FirstOrDefault()?.isDeletable;
-            //query PermisionId
-            var PermissionsIdFromDb = await _context.Roles
-            .Where(cp => cp.roleId == addNewUserDTORequest.roleId)
-            .Select(cp => cp.permissionId)
-            .FirstOrDefaultAsync();
-            Console.WriteLine($"[Service] PermissionsIdFromDb from Database: {PermissionsIdFromDb}");
 
-            if (PermissionsIdFromDb == null)
-            {
-                throw new Exception("PermissionsId is NULL in Database");
-            }
-            //query r w d where permissionId
-            var checkPermission = await _context.Permissions.Where(cp => cp.permissionId == PermissionsIdFromDb)
-            .Select(cp => new Permissions
-            {
-                isReadable = cp.isReadable,
-                isWritable = cp.isWritable,
-                isDeletable = cp.isDeletable
-            }).FirstOrDefaultAsync();
-            //check
-            if (checkPermission == null)
-            {
-                throw new Exception("invalid permisisonId");
-            }
-            if (checkPermission.isReadable != requestisReadable || checkPermission.isWritable != requestisWritable || checkPermission.isDeletable != requestisDeletable)
-            {
-                throw new Exception("invalid permission read write delete");
-            }
-            //query PermissionName
-            var permisisonName = await _context.Roles
-            .Include(r => r.Permissions)
-            .Where(r => r.roleId == addNewUserDTORequest.roleId)
-            .Select(r => r.Permissions.permissionName)
-            .FirstOrDefaultAsync();
-            if (permisisonName == null)
-            {
-                throw new Exception("INvalid permissionName");
-            }
             //hashed
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(addNewUserDTORequest.password);
             //declare and insert
@@ -83,8 +52,20 @@ public class UesrService : IUserService
                 password = hashedPassword,
                 roleId = addNewUserDTORequest.roleId
             };
+            Console.WriteLine($"[DEBUG] Before Insert - UserId: {newUser.roleId}");
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
+            var userPermissionsData = addNewUserDTORequest.permissions.Select(up => new User_Permissions
+            {
+                userId = newUser.userId,
+                permissionId = up.permissionsId,
+                isReadable = up.isReadable,
+                isWritable = up.isWritable,
+                isDeletable = up.isDeletable,
+            }).ToList();
+            _context.User_Permissions.AddRange(userPermissionsData);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return new AddNewUserDTOResponse
             {
                 userId = newUser.userId,
@@ -97,20 +78,23 @@ public class UesrService : IUserService
                     roleId = role.roleId,
                     roleName = role.roleName,
                 },
+                username = newUser.username,
                 permissions = new List<PermissionsResponse> { new PermissionsResponse{
-                    permissionId = PermissionsIdFromDb,
-                    permissionName = permisisonName,
+                    permissionId = permission.permissionId,
+                    permissionName = permission.permissionName,
                 }
                 }
             };
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             throw new Exception($"error:{ex.Message}");
         }
     }
     public async Task<DeleteUserDTOResponse> DeleteUser(string id)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
             var userId = id;
@@ -126,6 +110,18 @@ public class UesrService : IUserService
             }
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+            var userPermission = await _context.User_Permissions.FirstOrDefaultAsync(user => userId == user.userId);
+            if (userPermission == null)
+            {
+                return new DeleteUserDTOResponse
+                {
+                    result = false,
+                    message = "invalid userPermissionId"
+                };
+            }
+            _context.User_Permissions.Remove(userPermission);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return new DeleteUserDTOResponse
             {
                 result = true,
@@ -135,6 +131,7 @@ public class UesrService : IUserService
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             return new DeleteUserDTOResponse
             {
                 result = false,
@@ -148,6 +145,7 @@ public class UesrService : IUserService
         {
             var userData = await _context.Users
             .Include(u => u.Roles)
+            .Include(u => u.User_Permissions)
             .ThenInclude(u => u.Permissions)
             .FirstOrDefaultAsync(u => u.userId == id);
             if (userData == null)
@@ -168,8 +166,8 @@ public class UesrService : IUserService
                 },
                 username = userData.username,
                 permissions = new List<PermissionsResponse> { new PermissionsResponse{
-                    permissionId = userData.Roles.Permissions.permissionId,
-                    permissionName = userData.Roles.Permissions.permissionName
+                    permissionId = userData.User_Permissions.FirstOrDefault().permissionId,
+                    permissionName = userData.User_Permissions.FirstOrDefault().Permissions.permissionName
                 }
             }
             };
@@ -177,6 +175,80 @@ public class UesrService : IUserService
         catch (Exception ex)
         {
             throw new Exception("An unexpected error occurred:" + ex.Message);
+        }
+    }
+    public async Task<EditUserDTOResponse> EditUserById(EditUserDTORequest request, string id)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            var userData = await _context.Users
+            .Include(u => u.Roles)
+            .Include(up => up.User_Permissions)
+            .ThenInclude(up => up.Permissions)
+            .FirstOrDefaultAsync(u => u.userId == id);
+            if (userData == null)
+            {
+
+                throw new Exception($"User ID: {id} doesn't exist");
+            }
+
+            string hashedNewPassword = BCrypt.Net.BCrypt.HashPassword(request.password);
+            userData.firstName = request.firstName;
+            userData.lastName = request.lastName;
+            userData.email = request.email;
+            userData.phone = request.phone;
+            userData.roleId = request.roleId;
+            userData.username = request.username;
+            userData.password = hashedNewPassword;
+
+            var userPermission = userData.User_Permissions.FirstOrDefault();
+            if (userPermission == null)
+            {
+                throw new Exception($"User ID: {id} does not have assigned permissions.");
+            }
+            userPermission.permissionId = request.permission.First().permissionId;
+            userPermission.isReadable = request.permission.First().isReadable;
+            userPermission.isWritable = request.permission.First().isWritable;
+            userPermission.isDeletable = request.permission.First().isDeletable;
+            // _context.User_Permissions.Update(userPermission);
+
+            await _context.SaveChangesAsync();
+
+
+            await transaction.CommitAsync();
+
+
+
+            return new EditUserDTOResponse
+            {
+                userId = userData.userId,
+                firstName = userData.firstName,
+                LastName = userData.lastName,
+                email = userData.email,
+                phone = userData.phone,
+                role = new RoleResponse
+                {
+                    roleId = userData.roleId,
+                    roleName = userData.Roles.roleName,
+                },
+                username = userData.username,
+                permissions = new List<PermissionsResponse>{
+                    new PermissionsResponse{
+                        permissionId = userData.User_Permissions.FirstOrDefault().permissionId,
+                    permissionName = userData.User_Permissions.FirstOrDefault().Permissions.permissionName
+                    }
+                }
+
+            };
+
+        }
+        catch (Exception ex)
+        {
+
+            await transaction.RollbackAsync();
+            throw new Exception("An unexpected error occurred" + ex.Message);
         }
     }
 }

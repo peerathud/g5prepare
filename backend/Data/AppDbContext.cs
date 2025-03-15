@@ -11,5 +11,5 @@ public class AppDbContext:DbContext {
     public DbSet<Roles> Roles{get; set;} =null!;    
     
     public DbSet<Permissions> Permissions{get; set;} =null!;
-
+    public DbSet<User_Permissions> User_Permissions{get; set;} =null!;
     }

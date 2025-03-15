@@ -9,10 +9,5 @@ public partial class Permissions
     
     [Required]
     public string permissionName { get; set; }  
-    public bool isReadable { get; set; }
-    public bool isWritable { get; set; }
-    public bool isDeletable { get; set; }
-    // one-many  กับRole_Permissions
-    public virtual Roles Roles { get; set; }
-
+    public virtual ICollection<User_Permissions> UserPermissions { get; set; } = new List<User_Permissions>();
 }

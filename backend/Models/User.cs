@@ -22,6 +22,7 @@ public partial class Users
     [ForeignKey("Roles")]
     public string roleId { get; set; }
 
-    public virtual Roles Roles { get; set; } =new Roles();
+    public virtual Roles Roles { get; set; } 
+    public virtual ICollection<User_Permissions> User_Permissions { get; set; } =new List<User_Permissions>();
     
 }
