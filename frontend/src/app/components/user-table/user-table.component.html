@@ -1,0 +1,86 @@
+<div class="list">
+    <div class="headerList">
+        <p>List User</p>
+    </div>
+    <div class="testHead">
+        <div class="b1">Name</div>
+         
+        <div class="b3">Create Date</div>
+        <div class="b4">Role</div>
+        <div class="b5">Action</div>
+    </div>
+    <div class="Table">
+        <table>
+          
+
+            <tbody class="test">
+
+                <tr>
+                    <td class="name">
+                        <span>David Wagner</span>
+                        <span class="mail">David.Wgmail.com</span>
+                    </td>
+                    <td>
+                        <button class="btn-role">Super Admin</button>
+                    </td>
+                    <td>24 Otc, 2015</td>
+                    <td>lorem Ipsum </td>
+                    <td>
+                        <div class="action"><span class="material-symbols-outlined icon">
+                                border_color
+                            </span>
+                            <span class="material-symbols-outlined">
+                                delete
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="name">
+                        <span>David Wagner</span>
+                        <span class="mail">David.Wgmail.com</span>
+                    </td>
+                    <td>
+                        <button class="btn-role">Super Admin</button>
+                    </td>
+                    <td>24 Otc, 2015</td>
+                    <td>lorem Ipsum </td>
+                    <td>
+                        <div class="action"><span class="material-symbols-outlined icon">
+                                border_color
+                            </span>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="name">
+                        <span>David Wagner</span>
+                        <span class="mail">David.Wgmail.com</span>
+                    </td>
+                    <td>
+                        
+                        <button class="btn-role ">Super Admin</button>
+                    </td>
+                    <td>24 Otc, 2015</td>
+                    <td>lorem Ipsum </td>
+                    <td>
+                        <div class="action "><span class="material-symbols-outlined icon">
+                                border_color
+                            </span>
+
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        
+    </div>
+    <mat-paginator  [length]="20"
+                    [pageSize]="5"
+                    [pageSizeOptions]="[5,10]"
+                    [pageIndex]="currentPage"
+                    (page)="handlePageEvent($event)" >
+                    </mat-paginator>
+</div>

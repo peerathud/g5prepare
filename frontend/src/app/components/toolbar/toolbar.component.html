@@ -1,0 +1,28 @@
+<div class="toolbar">
+    <div class="search ">
+        <span class="material-symbols-outlined">search </span>
+        <input type="text" class="search-box" placeholder="search">
+    </div>
+
+    <button class="btn-user">Add user +</button>
+
+    <div class="dropdown">
+        <button class="dropdown-btn">Sort by ▼</button>
+        <ul class="dropdown-menu">
+            <li (click)="sortBy('Name')">Name</li>
+            <li (click)="sortBy('Date')">Date</li>
+            <li (click)="sortBy('Role')">Role</li>
+        </ul>
+    </div>
+    <div class="dropdown">
+        <button class="dropdown-btn">Saved search ▼</button>
+        <ul class="dropdown-menu">
+            <li (click)="sortBy('Name')">Name</li>
+            <li (click)="sortBy('Date')">Date</li>
+            <li (click)="sortBy('Role')">Role</li>
+        </ul>
+    </div>
+    <div class="setting">
+        <span class="material-symbols-outlined">tune</span>
+    </div>
+</div>
