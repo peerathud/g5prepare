@@ -7,6 +7,7 @@ using backend.Models;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using System.Transactions;
+using Azure.Core;
 public class UesrService : IUserService
 {
     private readonly AppDbContext _context;
@@ -33,14 +34,9 @@ public class UesrService : IUserService
                 throw new Exception("Invalid PermissionsId");
             }
 
-            Console.WriteLine($"[Service] Received UserID: {addNewUserDTORequest.id}");
-            Console.WriteLine($"[Service] RoleID: {addNewUserDTORequest.roleId}");
-            Console.WriteLine($"[Service] Permissions Count: {addNewUserDTORequest.permissions?.Count}");
-            Console.WriteLine($"[Controller] First Permission ID: {addNewUserDTORequest.permissions.FirstOrDefault()?.permissionsId}");
-
             //hashed
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(addNewUserDTORequest.password);
-            //declare and insert
+
             var newUser = new Users
             {
                 userId = addNewUserDTORequest.id,
@@ -50,7 +46,8 @@ public class UesrService : IUserService
                 phone = addNewUserDTORequest.phone,
                 username = addNewUserDTORequest.username,
                 password = hashedPassword,
-                roleId = addNewUserDTORequest.roleId
+                roleId = addNewUserDTORequest.roleId,
+                createdDate = DateTime.Now.Date,
             };
             Console.WriteLine($"[DEBUG] Before Insert - UserId: {newUser.roleId}");
             _context.Users.Add(newUser);
@@ -89,6 +86,81 @@ public class UesrService : IUserService
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
+            throw new Exception($"error:{ex.Message}");
+        }
+    }
+    public async Task<GetAllUserDTOResponse> GetAllUser(GetAllUserDTORequest getAllUserDTORequest)
+    {
+        try
+        {
+            var query = _context.Users.AsQueryable();
+            if (!string.IsNullOrEmpty(getAllUserDTORequest.search))
+            {
+                query = query.Where(u => u.firstName.Contains(getAllUserDTORequest.search) || u.lastName.Contains(getAllUserDTORequest.search) || u.roleId.Contains(getAllUserDTORequest.search));
+
+            }
+            if (!string.IsNullOrEmpty(getAllUserDTORequest.orderBy) && !string.IsNullOrEmpty(getAllUserDTORequest.orderDirection))
+            {
+                var orderByProperty = getAllUserDTORequest.orderBy.ToLower();
+                var orderDirection = getAllUserDTORequest.orderDirection.ToLower();
+                if (orderByProperty == "firstname" && orderDirection == "asc")
+                {
+                    query = query.OrderBy(u => u.firstName);
+                }
+                else if (orderByProperty == "firstName" && orderDirection == "desc")
+                {
+                    query = query.OrderByDescending(u => u.firstName);
+                }
+                else if (orderByProperty == "createddate" && orderDirection == "asc")
+                {
+                    query = query.OrderBy(u => u.createdDate);
+                }
+                else if (orderByProperty == "createddate" && orderDirection == "desc")
+                {
+                    query = query.OrderByDescending(u => u.createdDate);
+                }
+                else if (orderByProperty == "roleid" && orderDirection == "asc")
+                {
+                    query = query.OrderBy(u => u.roleId);
+                }
+                else if (orderByProperty == "roleid" && orderDirection == "desc")
+                {
+                    query = query.OrderByDescending(u => u.roleId);
+                }
+                else
+                {
+                    query = query.OrderBy(u => u.userId);
+                }
+            }
+            if(getAllUserDTORequest.pageNumber.HasValue&&getAllUserDTORequest.pageSize.HasValue){
+                query=query.Skip((getAllUserDTORequest.pageNumber.Value-1)*getAllUserDTORequest.pageSize.Value).Take(getAllUserDTORequest.pageSize.Value);
+            }
+            var totalCount = await query.CountAsync();
+            var users =await query.Select(u=>new DataSourceResponse{
+                userId =u.userId,
+                firstName =u.firstName,
+                LastName =u.lastName,
+                email =u.email,
+                role =new RoleResponse{
+                    roleId =u.roleId,
+                    roleName =u.Roles.roleName
+                },
+                username =u.username,
+                createdDate =u.createdDate,
+                permissions =u.User_Permissions.Select(p=>new PermissionsResponse{
+                    permissionId =p.permissionId,
+                    permissionName =p.Permissions.permissionName,
+                }).ToList()
+            }).ToListAsync();
+            return new GetAllUserDTOResponse{
+                DataSource =users,
+                page =getAllUserDTORequest.pageNumber?? 1,
+                pageSize =getAllUserDTORequest.pageSize?? 1,
+                totalCount=totalCount
+            };
+        }
+        catch (Exception ex)
+        {
             throw new Exception($"error:{ex.Message}");
         }
     }

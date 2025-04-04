@@ -5,6 +5,7 @@ import { HeaderComponent } from "../../components/header/header.component";
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { ToolbarComponent } from "../../components/toolbar/toolbar.component";
 import { UserTableComponent } from "../../components/user-table/user-table.component";
+
 @Component({
   selector: 'app-dashboard',
   standalone: true, 

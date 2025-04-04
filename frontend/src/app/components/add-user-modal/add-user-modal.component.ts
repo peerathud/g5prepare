@@ -7,8 +7,11 @@
   import { MatSelectModule } from '@angular/material/select'
   import { MatCheckboxModule } from '@angular/material/checkbox';
   import { FormBuilder, FormGroup, ReactiveFormsModule, Validators,FormsModule } from '@angular/forms';
-
   import {MatTableModule} from '@angular/material/table';
+import { AddUserPermissionRequest } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
+import Swal from 'sweetalert2';
+
   @Component({
     selector: 'app-add-user-modal',
     imports: [FormsModule,ReactiveFormsModule,MatDialogModule,MatFormFieldModule,MatInputModule,CommonModule,MatSelectModule,MatTableModule,MatCheckboxModule],
@@ -17,9 +20,9 @@
   })
   export class AddUserModalComponent implements OnInit {
     
-    constructor(public dialogRef:MatDialogRef<AddUserModalComponent>,private fb:FormBuilder){
+    constructor(public dialogRef:MatDialogRef<AddUserModalComponent>,private fb:FormBuilder,private userService:UserService){
       this.userForm=this.fb.group({
-        userId:['',Validators.required],
+        id:['',Validators.required],
         firstName:['',[Validators.required,Validators.minLength(3)]],
         lastName:['',[Validators.required,Validators.minLength(3)]],
         email:['',Validators.required],
@@ -27,7 +30,7 @@
         roleId:['',Validators.required],
         username:['',Validators.required],
         password:['',Validators.required],
-        confirmPassword:['',Validators.required]
+        confirmPassword:['',Validators.required],
       });
     
     }
@@ -38,10 +41,10 @@
    
     userForm:FormGroup;
     permissionsData = [
-      { module: 'Super Admin', isReadable: true, isWritable: true, isDeletable: true },
-      { module: 'Admin', isReadable: true, isWritable: false, isDeletable: false },
-      { module: 'Employee', isReadable: true, isWritable: false, isDeletable: false },
-      { module: 'Lorem Ipsum', isReadable: true, isWritable: true, isDeletable: true }
+      { module: 'Super Admin', isReadable: true, isWritable: true, isDeletable: true,permissionsId:'superadminP' },
+      { module: 'Admin', isReadable: true, isWritable: false, isDeletable: false ,permissionsId:'adminP'},
+      { module: 'Employee', isReadable: true, isWritable: false, isDeletable: false,permissionsId:'employeeP' },
+      { module: 'Lorem Ipsum', isReadable: true, isWritable: true, isDeletable: true,permissionsId:'loremipsumP' }
     ];
     displayedColumns:string[]=['module','Read','Write','Delete']
 
@@ -52,9 +55,9 @@
       console.log("user save");
       
       const password = this.userForm.get('password')?.value;
-      const confirmPassword = this.userForm.get('confirmPassword')?.value;
+      const checkConfirmPassword = this.userForm.get('confirmPassword')?.value;
   
-      if (password !== confirmPassword) {
+      if (password !== checkConfirmPassword) {
         console.log("Passwords do not match");
         this.userForm.get('confirmPassword')?.setErrors({ mismatch: true });
         return;
@@ -63,6 +66,45 @@
         console.log("invlid form")
         return 
       }
-      this.dialogRef.close();
+      const {confirmPassword, ...formValues}=this.userForm.value;
+      
+      const roleId =formValues.roleId
+      let permissions: { permissionsId: string; isReadable: boolean; isWritable: boolean; isDeletable: boolean; }[]=[];
+      this.permissionsData.forEach((permission)=>{
+        const permissionsId =permission.module.trim().toLowerCase().replace(' ', '')
+        if(permissionsId ==roleId){
+          permissions.push({
+            permissionsId:permission.permissionsId,
+            isReadable:permission.isReadable,
+            isWritable:permission.isWritable,
+            isDeletable:permission.isDeletable
+          });
+         
+        }
+      });
+      const signUpData={
+        ...formValues,
+        permissions:permissions
+      };
+      console.log(signUpData)
+      this.userService.AddUser(signUpData).subscribe(response=>{
+        console.log(response)
+        Swal.fire({
+          title: 'Success!',
+          text: 'User added successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+        this.dialogRef.close();
+      },error=>{
+        console.log('Error add user',error)
+        Swal.fire({
+          title: 'Error!',
+          text: 'There was an issue adding the user.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      });
+      
     }
   }

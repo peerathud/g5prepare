@@ -50,6 +50,16 @@ public class UserController : ControllerBase
         }
         return Ok(new { status = new { code = "200", description = "Delete user successfully" }, data = response });
     }
+    [HttpPost("users/DataTable")]
+    public async Task<IActionResult> GetAllUser([FromBody] GetAllUserDTORequest request){
+        var response =await _userService.GetAllUser(request);
+        try{
+             return Ok(response);
+        }catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+            }
     [HttpGet("users/{id}")]
     public async Task<IActionResult> GetUserById(string id)
     {

@@ -17,7 +17,8 @@ public partial class Users
     public string firstName { get; set; } = string.Empty;
     [Required]
     public string lastName { get; set; } = string.Empty;
-
+    [Required]
+     public DateTime createdDate {get; set;} = DateTime.MinValue;
     public string? phone { get; set; } = null;
     [ForeignKey("Roles")]
     public string roleId { get; set; }
