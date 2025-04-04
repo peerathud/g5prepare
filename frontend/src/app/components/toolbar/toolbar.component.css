@@ -109,4 +109,12 @@ body, html, * {
    color:white;
    font-size:15px;
    background-color:#4a85f6;
+   cursor: pointer;
+   transition: transform 0.3s ease;
+ }
+ .btn-user:hover{
+   background-color:#6295f5;
+ }
+ .btn-user:active{
+   transform: scale(1.1);
  }

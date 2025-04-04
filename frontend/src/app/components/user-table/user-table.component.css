@@ -28,32 +28,35 @@
     padding: 5px 15px;
 }
 
-
-.b1 {
-    width: 38%;
-    padding-left: 10px;
+.b1{
+    padding-right:400px;
 }
-
-.b3 {
-    width: 12%;
-    margin-left: 10px;
+.b3{
+    padding-right: 100px;
 }
-
-.b4 {
-    width: 11%;
+.b4{
+    padding-right:160px;
 }
-
-.b5 {
-    width: 14%;
+.b5{
+    padding-right:190px;
 }
-
 .Table {
     margin: 0px 20px;
+   
 }
-
+table{
+    width: 100%;
+     table-layout: fixed; 
+     border-collapse: collapse;
+}
 td {
-    padding: 12px 10px;
-    border-bottom: 1px rgb(212, 212, 212) solid;
+    padding: 10px 12px;
+    
+    border-bottom: 4px rgb(212, 212, 212) solid;
+    word-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
+ 
 }
 
 .action {
@@ -72,6 +75,7 @@ td {
 table {
     border-collapse: collapse; 
     width: 100%; 
+   
 }
 
 .material-symbols-outlined {
@@ -124,11 +128,7 @@ th{
     height: 50px;
 }
 
-.name{
- padding-left: 20px;
- display:flex;
- flex-direction: column;
-}
+
 
 
 .mail{
@@ -136,6 +136,22 @@ th{
     font-size:14px;
 }
 
-
-
+.clickable{
+    cursor:pointer;
+    transition:color 0.2s;
+    transition: transform 0.3s ease;
+}
+.clickable:hover{
+    color:#0095FF;
+    
+}
+.clickable:active{
+    transform: scale(1.2);
+}
+mat-paginator{
+    display:flex;
+    justify-content: center;
+    margin-top:20px;
+    background-color: #f3f4f5;
+}
 

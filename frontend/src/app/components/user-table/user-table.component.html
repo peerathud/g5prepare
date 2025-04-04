@@ -15,72 +15,39 @@
 
             <tbody class="test">
 
-                <tr>
+                <tr *ngFor="let user of pagedData">
                     <td class="name">
-                        <span>David Wagner</span>
-                        <span class="mail">David.Wgmail.com</span>
+                        <span>{{user.name}}</span><br>
+                        <span class="mail">{{user.email}}</span>
                     </td>
                     <td>
-                        <button class="btn-role">Super Admin</button>
+                        <button class="btn-role">{{user.role}}</button>
                     </td>
-                    <td>24 Otc, 2015</td>
-                    <td>lorem Ipsum </td>
+                    <td>{{user.createDate}}</td>
+                    <td>{{user.role}}</td>
                     <td>
-                        <div class="action"><span class="material-symbols-outlined icon">
+                        <div class="action">
+                           <span class="material-symbols-outlined icon clickable" (click)="editUser()">
                                 border_color
                             </span>
-                            <span class="material-symbols-outlined">
+                        
+                            <span class="material-symbols-outlined  clickable" (click)="deleteUser()">
                                 delete
                             </span>
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td class="name">
-                        <span>David Wagner</span>
-                        <span class="mail">David.Wgmail.com</span>
-                    </td>
-                    <td>
-                        <button class="btn-role">Super Admin</button>
-                    </td>
-                    <td>24 Otc, 2015</td>
-                    <td>lorem Ipsum </td>
-                    <td>
-                        <div class="action"><span class="material-symbols-outlined icon">
-                                border_color
-                            </span>
-
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="name">
-                        <span>David Wagner</span>
-                        <span class="mail">David.Wgmail.com</span>
-                    </td>
-                    <td>
-                        
-                        <button class="btn-role ">Super Admin</button>
-                    </td>
-                    <td>24 Otc, 2015</td>
-                    <td>lorem Ipsum </td>
-                    <td>
-                        <div class="action "><span class="material-symbols-outlined icon">
-                                border_color
-                            </span>
-
-                        </div>
-                    </td>
-                </tr>
-
             </tbody>
         </table>
         
     </div>
-    <mat-paginator  [length]="20"
-                    [pageSize]="5"
-                    [pageSizeOptions]="[5,10]"
+    <div class="paginator">
+         <mat-paginator  [length]="users.length"
+                    [pageSize]="pageSize"
+                    [pageSizeOptions]="pageSizeOption"
                     [pageIndex]="currentPage"
                     (page)="handlePageEvent($event)" >
                     </mat-paginator>
+    </div>
+   
 </div>
