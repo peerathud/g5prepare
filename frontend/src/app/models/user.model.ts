@@ -15,3 +15,37 @@ export interface AddUserPermissionRequest{
     isWritable:boolean;
     isDeletable:boolean;
 }
+
+//----GetAllUserInterface
+export interface GetAllUserRequest{
+    orderBy?:string;
+    orderDirection?:string;
+    pageNumber?:number;
+    search?:string;
+    pageSize?:number;
+}
+export interface GetAllUserResponse{
+    dataSource:GetAllUserDataSource[];
+    page:number;
+    pageSize:number;
+    totalCount:number;
+}
+export interface GetAllUserDataSource{
+    userId:string;
+    firstName:string;
+    LastName:string;
+    email:string;
+    role:GetAllUserRoleResponse[];
+    username:string;
+    permissions:PermissionsResponse[];
+    createdDate:string;
+    
+}
+export interface GetAllUserRoleResponse{
+    roleId:string;
+    rolseName:string;
+}
+export interface PermissionsResponse{
+    permissionId:string;
+    permissionName:string;
+}

@@ -1,27 +1,29 @@
 <div class="toolbar">
     <div class="search ">
         <span class="material-symbols-outlined">search </span>
-        <input type="text" class="search-box" placeholder="search">
+        <input type="text" class="search-box" placeholder="search" [(ngModel)]="searchQuery" (keydown.enter)="onSearch()" >
     </div>
 
     <button class="btn-user" (click)="openAddUser()">Add user +</button>
 
     <div class="dropdown">
-        <button class="dropdown-btn">Sort by ▼</button>
-        <ul class="dropdown-menu">
-            <li (click)="sortBy('Name')">Name</li>
-            <li (click)="sortBy('Date')">Date</li>
-            <li (click)="sortBy('Role')">Role</li>
-        </ul>
+        <mat-form-field class="custom-select">
+            <mat-label>SortBy</mat-label>
+            <mat-select disableRipple class="selectfield" [(ngModel)]="orderBy" (selectionChange)="onSort()">
+              <mat-option value="firstname">Name</mat-option>
+              <mat-option value="createddate">Date</mat-option>
+              <mat-option value="roleid">Role</mat-option>
+            </mat-select>
+          </mat-form-field>
     </div>
+    <div class="sort-direction">
+        <span class="material-symbols-outlined clickable" (click)="onChangeDirection('desc')"> arrow_upward</span>
+        <span class="material-symbols-outlined clickable" (click)="onChangeDirection('asc')"> arrow_downward</span>      </div>
     <div class="dropdown">
         <button class="dropdown-btn">Saved search ▼</button>
-        <ul class="dropdown-menu">
-            <li (click)="sortBy('Name')">Name</li>
-            <li (click)="sortBy('Date')">Date</li>
-            <li (click)="sortBy('Role')">Role</li>
-        </ul>
+      
     </div>
+  
     <div class="setting">
         <span class="material-symbols-outlined">tune</span>
     </div>

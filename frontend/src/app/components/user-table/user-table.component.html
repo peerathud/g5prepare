@@ -1,6 +1,8 @@
 <div class="list">
     <div class="headerList">
-        <p>List User</p>
+        <p>List User</p> 
+            
+          
     </div>
     <div class="testHead">
         <div class="b1">Name</div>
@@ -9,22 +11,24 @@
         <div class="b4">Role</div>
         <div class="b5">Action</div>
     </div>
+   
     <div class="Table">
         <table>
           
 
             <tbody class="test">
 
-                <tr *ngFor="let user of pagedData">
+                <tr *ngFor="let user of allUsers">
                     <td class="name">
-                        <span>{{user.name}}</span><br>
+                        <span>{{ user.firstName }} {{ user.lastName }}</span><br>
                         <span class="mail">{{user.email}}</span>
                     </td>
                     <td>
-                        <button class="btn-role">{{user.role}}</button>
+                        <button class="btn-role" *ngIf="user.role.roleId=='employee'" style="background-color:rgb(234, 234, 234);color:gray">{{user.role.roleName}}</button>
+                        <button class="btn-role" *ngIf="user.role.roleId!='employee'" style="background-color:#0095FF">{{user.role.roleName}}</button>
                     </td>
-                    <td>{{user.createDate}}</td>
-                    <td>{{user.role}}</td>
+                    <td>{{user.createdDate| date}}</td>
+                    <td>{{user.role.roleName}}</td>
                     <td>
                         <div class="action">
                            <span class="material-symbols-outlined icon clickable" (click)="editUser()">
@@ -42,7 +46,7 @@
         
     </div>
     <div class="paginator">
-         <mat-paginator  [length]="users.length"
+         <mat-paginator  [length]="totalCount"
                     [pageSize]="pageSize"
                     [pageSizeOptions]="pageSizeOption"
                     [pageIndex]="currentPage"

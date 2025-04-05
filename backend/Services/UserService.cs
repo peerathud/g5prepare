@@ -107,7 +107,7 @@ public class UesrService : IUserService
                 {
                     query = query.OrderBy(u => u.firstName);
                 }
-                else if (orderByProperty == "firstName" && orderDirection == "desc")
+                else if (orderByProperty == "firstname" && orderDirection == "desc")
                 {
                     query = query.OrderByDescending(u => u.firstName);
                 }
@@ -135,7 +135,7 @@ public class UesrService : IUserService
             if(getAllUserDTORequest.pageNumber.HasValue&&getAllUserDTORequest.pageSize.HasValue){
                 query=query.Skip((getAllUserDTORequest.pageNumber.Value-1)*getAllUserDTORequest.pageSize.Value).Take(getAllUserDTORequest.pageSize.Value);
             }
-            var totalCount = await query.CountAsync();
+            var totalCount = await _context.Users.CountAsync();
             var users =await query.Select(u=>new DataSourceResponse{
                 userId =u.userId,
                 firstName =u.firstName,

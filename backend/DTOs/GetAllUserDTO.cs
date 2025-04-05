@@ -5,11 +5,14 @@ namespace backend.DTOs
 {
     public class GetAllUserDTORequest
     {
-        public string? orderBy { get; set; } = null;
-        public string? orderDirection { get; set; } = null;
+        public string? orderBy { get; set; }  = string.Empty;
+       
+        public string? orderDirection { get; set; }  = string.Empty;
+       
         public int? pageNumber { get; set; } = 0;
         public int? pageSize { get; set; } = 0;
-        public string? search { get; set; } = null;
+        public string? search { get; set; }  = string.Empty;
+        
     }
     public class GetAllUserDTOResponse{
         public List<DataSourceResponse> DataSource { get;set;} = new List<DataSourceResponse>();
