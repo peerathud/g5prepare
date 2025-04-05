@@ -132,31 +132,36 @@ public class UesrService : IUserService
                     query = query.OrderBy(u => u.userId);
                 }
             }
-            if(getAllUserDTORequest.pageNumber.HasValue&&getAllUserDTORequest.pageSize.HasValue){
-                query=query.Skip((getAllUserDTORequest.pageNumber.Value-1)*getAllUserDTORequest.pageSize.Value).Take(getAllUserDTORequest.pageSize.Value);
+            if (getAllUserDTORequest.pageNumber.HasValue && getAllUserDTORequest.pageSize.HasValue)
+            {
+                query = query.Skip((getAllUserDTORequest.pageNumber.Value - 1) * getAllUserDTORequest.pageSize.Value).Take(getAllUserDTORequest.pageSize.Value);
             }
             var totalCount = await _context.Users.CountAsync();
-            var users =await query.Select(u=>new DataSourceResponse{
-                userId =u.userId,
-                firstName =u.firstName,
-                LastName =u.lastName,
-                email =u.email,
-                role =new RoleResponse{
-                    roleId =u.roleId,
-                    roleName =u.Roles.roleName
+            var users = await query.Select(u => new DataSourceResponse
+            {
+                userId = u.userId,
+                firstName = u.firstName,
+                LastName = u.lastName,
+                email = u.email,
+                role = new RoleResponse
+                {
+                    roleId = u.roleId,
+                    roleName = u.Roles.roleName
                 },
-                username =u.username,
-                createdDate =u.createdDate,
-                permissions =u.User_Permissions.Select(p=>new PermissionsResponse{
-                    permissionId =p.permissionId,
-                    permissionName =p.Permissions.permissionName,
+                username = u.username,
+                createdDate = u.createdDate,
+                permissions = u.User_Permissions.Select(p => new PermissionsResponse
+                {
+                    permissionId = p.permissionId,
+                    permissionName = p.Permissions.permissionName,
                 }).ToList()
             }).ToListAsync();
-            return new GetAllUserDTOResponse{
-                DataSource =users,
-                page =getAllUserDTORequest.pageNumber?? 1,
-                pageSize =getAllUserDTORequest.pageSize?? 1,
-                totalCount=totalCount
+            return new GetAllUserDTOResponse
+            {
+                DataSource = users,
+                page = getAllUserDTORequest.pageNumber ?? 1,
+                pageSize = getAllUserDTORequest.pageSize ?? 1,
+                totalCount = totalCount
             };
         }
         catch (Exception ex)
@@ -170,7 +175,7 @@ public class UesrService : IUserService
         try
         {
             var userId = id;
-            var user = await _context.Users.FirstOrDefaultAsync(user => userId == user.userId);
+            var user = await _context.Users.FirstOrDefaultAsync(user => id == user.userId);
 
             if (user == null)
             {
@@ -180,9 +185,8 @@ public class UesrService : IUserService
                     message = "invalid userId"
                 };
             }
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            var userPermission = await _context.User_Permissions.FirstOrDefaultAsync(user => userId == user.userId);
+            
+            var userPermission = await _context.User_Permissions.FirstOrDefaultAsync(user => id == user.userId);
             if (userPermission == null)
             {
                 return new DeleteUserDTOResponse
@@ -190,8 +194,12 @@ public class UesrService : IUserService
                     result = false,
                     message = "invalid userPermissionId"
                 };
+            }else{
+                 _context.User_Permissions.Remove(userPermission);
+                 await _context.SaveChangesAsync();
             }
-            _context.User_Permissions.Remove(userPermission);
+           
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
             return new DeleteUserDTOResponse
@@ -211,6 +219,8 @@ public class UesrService : IUserService
             };
         }
     }
+ 
+
     public async Task<GetUserByIdDTOResponse> GetUserById(string id)
     {
         try
@@ -249,6 +259,47 @@ public class UesrService : IUserService
             throw new Exception("An unexpected error occurred:" + ex.Message);
         }
     }
+    public async Task<GetUserByIdDTOResponse2> GetUserById2(string id)
+    {
+        try
+        {
+            var userData = await _context.Users
+            .Include(u => u.Roles)
+            .Include(u => u.User_Permissions)
+            .ThenInclude(u => u.Permissions)
+            .FirstOrDefaultAsync(u => u.userId == id);
+            if (userData == null)
+            {
+                throw new Exception("user not found");
+            }
+            return new GetUserByIdDTOResponse2
+            {
+                id = userData.userId,
+                firstName = userData.firstName,
+                LastName = userData.lastName,
+                email = userData.email,
+                phone = userData.phone,
+                role = new RoleResponse
+                {
+                    roleId = userData.roleId,
+                    roleName = userData.username
+                },
+                username = userData.username,
+                permissions = new List<GetUserByIdPermissions2> { new GetUserByIdPermissions2{
+                    permissionId = userData.User_Permissions.FirstOrDefault().permissionId,
+                    isReadable = userData.User_Permissions.FirstOrDefault().isReadable,
+                    isWritable = userData.User_Permissions.FirstOrDefault().isWritable,
+                    isDeletable = userData.User_Permissions.FirstOrDefault().isDeletable,
+
+                }
+            }
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An unexpected error occurred:" + ex.Message);
+        }
+    }
     public async Task<EditUserDTOResponse> EditUserById(EditUserDTORequest request, string id)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync();
@@ -266,15 +317,19 @@ public class UesrService : IUserService
                 throw new Exception($"User ID: {id} doesn't exist");
             }
 
-            string hashedNewPassword = BCrypt.Net.BCrypt.HashPassword(request.password);
+
             userData.firstName = request.firstName;
             userData.lastName = request.lastName;
             userData.email = request.email;
             userData.phone = request.phone;
             userData.roleId = request.roleId;
             userData.username = request.username;
-            userData.password = hashedNewPassword;
 
+            if (!string.IsNullOrEmpty(request.password))
+            {
+                string hashedNewPassword = BCrypt.Net.BCrypt.HashPassword(request.password);
+                userData.password = hashedNewPassword;
+            }
             var userPermission = userData.User_Permissions.FirstOrDefault();
             if (userPermission == null)
             {
@@ -284,7 +339,7 @@ public class UesrService : IUserService
             userPermission.isReadable = request.permission.First().isReadable;
             userPermission.isWritable = request.permission.First().isWritable;
             userPermission.isDeletable = request.permission.First().isDeletable;
-            // _context.User_Permissions.Update(userPermission);
+
 
             await _context.SaveChangesAsync();
 
@@ -292,28 +347,35 @@ public class UesrService : IUserService
             await transaction.CommitAsync();
 
 
+            var updatedUserData = await _context.Users
+           .Include(u => u.Roles)
+           .Include(up => up.User_Permissions)
+           .ThenInclude(up => up.Permissions)
+           .FirstOrDefaultAsync(u => u.userId == id);
 
-            return new EditUserDTOResponse
+            if (updatedUserData == null)
             {
-                userId = userData.userId,
-                firstName = userData.firstName,
-                LastName = userData.lastName,
-                email = userData.email,
-                phone = userData.phone,
-                role = new RoleResponse
-                {
-                    roleId = userData.roleId,
-                    roleName = userData.Roles.roleName,
-                },
-                username = userData.username,
-                permissions = new List<PermissionsResponse>{
-                    new PermissionsResponse{
-                        permissionId = userData.User_Permissions.FirstOrDefault().permissionId,
-                    permissionName = userData.User_Permissions.FirstOrDefault().Permissions.permissionName
-                    }
-                }
-
-            };
+                throw new Exception($"User ID: {id} not found after update.");
+            }
+               return new EditUserDTOResponse
+        {
+            userId = updatedUserData.userId,
+            firstName = updatedUserData.firstName,
+            LastName = updatedUserData.lastName,
+            email = updatedUserData.email,
+            phone = updatedUserData.phone,
+            role = new RoleResponse
+            {
+                roleId = updatedUserData.roleId,
+                roleName = updatedUserData.Roles?.roleName ?? "Unknown Role", 
+            },
+            username = updatedUserData.username,
+            permissions = updatedUserData.User_Permissions?.Select(up => new PermissionsResponse
+            {
+                permissionId = up.permissionId ?? "Unknown Permission",
+                permissionName = up.Permissions?.permissionName ?? "Unknown Permission"
+            }).ToList() ?? new List<PermissionsResponse>()
+        };
 
         }
         catch (Exception ex)
@@ -323,4 +385,6 @@ public class UesrService : IUserService
             throw new Exception("An unexpected error occurred" + ex.Message);
         }
     }
+  
+
 }

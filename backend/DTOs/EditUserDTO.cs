@@ -16,6 +16,7 @@ namespace backend.DTOs
         [Required]
         public string username { get; set; } = string.Empty;
         public string password { get; set; } = string.Empty;
+        [Required]
         public List<EditPermissionRequest> permission { get; set; } = new List<EditPermissionRequest>();
 
     }

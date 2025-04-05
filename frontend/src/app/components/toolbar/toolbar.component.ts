@@ -39,7 +39,7 @@ export class ToolbarComponent {
       maxHeight: '90vh'    
     });
     dialogRef.afterClosed().subscribe((result)=>{
-      console.log("dialog closed")
+      console.log("dialog closed",result)
     })
   }
 

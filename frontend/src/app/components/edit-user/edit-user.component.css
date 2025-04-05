@@ -1,0 +1,90 @@
+body, html, * {
+    font-family: 'Roboto', sans-serif ;
+  }
+  mat-form-field {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    height:auto;
+  
+  
+  }
+  mat-dialog-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
+  mat-dialog-actions {
+    justify-content: flex-end;
+  }
+  .name{
+    display:flex;
+    gap:20px;
+    }
+    .input-section2{
+    display:flex;
+    gap:20px;
+    }
+    .input-section3{
+    display:flex;
+    gap:20px;
+    }
+    .dialog-container{
+     
+      height: auto;
+      padding:20px;
+      overflow: auto;
+    }
+      mat-dialog-title {
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+      
+      mat-dialog-actions {
+        justify-content: flex-end;
+      }
+    .name{
+      display:flex;
+      gap:20px;
+    }
+    .input-section2{
+      display:flex;
+      gap:20px;
+    }
+    .input-section3{
+      display:flex;
+      gap:20px;
+    }
+     mat-header-row {
+      background-color: #E0E0E0; 
+    }
+    .btnEditUser{
+        border-radius: 15px;
+        background-color: #0095FF;
+        color:white;
+        border-color:#0095FF ;
+        padding:10px 20px;
+      }
+      .btnEditUser:hover{
+        background-color:rgb(30, 143, 223);
+      }
+      .btnEditUser:active{
+        transform: scale(1.1);
+      }
+      .btnCancel{
+        border-radius: 15px;
+        background-color: #FFFFFF;
+        color:gray;
+        border-color:#FFFFFF ;
+        padding:10px 20px;
+      }
+      .btnCancel:hover{
+        background-color:#f9f9f9;
+      }
+      .btnCancel:active{
+        transform: scale(1.1);
+      }
+      .btn{
+        display:flex;
+        gap:20px;
+      }

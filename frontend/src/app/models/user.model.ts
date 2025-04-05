@@ -37,7 +37,7 @@ export interface GetAllUserDataSource{
     email:string;
     role:GetAllUserRoleResponse[];
     username:string;
-    permissions:PermissionsResponse[];
+    permission:PermissionsResponse[];
     createdDate:string;
     
 }
@@ -49,3 +49,22 @@ export interface PermissionsResponse{
     permissionId:string;
     permissionName:string;
 }
+//------------updateUser
+export interface Permission {
+    permissionId: string;
+    isReadable: boolean;
+    isWritable: boolean;
+    isDeletable: boolean;
+  }
+  
+  export interface UpdateUserRequest {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    roleId: string;
+    username: string;
+    password: string;
+    permission: Permission[]; // เนื่องจาก permission เป็นอาร์เรย์
+  }
+  

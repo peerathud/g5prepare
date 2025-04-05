@@ -5,6 +5,9 @@ import { GetAllUserRequest, GetAllUserResponse } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { SortSearchService } from '../../services/sort-search.service';
 import { Subscription } from 'rxjs';
+import { EditUserComponent } from '../edit-user/edit-user.component';
+import { MatDialog } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-table',
@@ -23,7 +26,7 @@ export class UserTableComponent implements OnInit {
   orderDirection: string = 'asc';
   private sortSubscription!: Subscription;
   private searchSubscription!: Subscription;
-  constructor(private userService: UserService, private sortSearchService: SortSearchService) { }
+  constructor(private userService: UserService, private sortSearchService: SortSearchService,public dialog:MatDialog) { }
   ngOnInit() {
 
     this.sortSubscription = this.sortSearchService.currentSortData.subscribe(sortData => {
@@ -73,10 +76,49 @@ export class UserTableComponent implements OnInit {
       }
     );
   }
-  editUser() {
-    console.log("Hello edit User")
+  editUser(userId:any) {
+    const dialogRef =this.dialog.open(EditUserComponent,{
+      width:'1000px',
+      height:'auto',
+      maxWidth: '90vw',   
+      maxHeight: '90vh',
+      data: { userId: userId }  
+    });
+    dialogRef.afterClosed().subscribe((result)=>{
+      if (result) {
+        console.log('Edited user:', result);
+        // อัปเดตข้อมูล
+      }
+    })
+    console.log("Hello edit User userId",userId)
   }
-  deleteUser() {
-    console.log("Hello delete user")
+  deleteUser(id:string) {
+    console.log("id?",id)
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to delete this user?`,
+      icon: 'warning',
+      showCancelButton: true,  
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true  
+    }).then((result) => {
+      if (result.isConfirmed) {
+       
+        this.userService.deleteUser(id).subscribe(
+          (response) => {
+            Swal.fire('Deleted!', 'The user has been deleted.', 'success');
+            this.ngOnInit();  
+          },
+          (error) => {
+            Swal.fire('Error!', 'There was an error deleting the user.', 'error');
+          }
+        );
+      } else if (result.isDismissed) {
+       
+        Swal.fire('Cancelled', 'The user was not deleted.', 'info');
+      }
+    });
   }
-}
+  }
+

@@ -88,6 +88,34 @@ public class UserController : ControllerBase
             });
         }
     }
+    [HttpGet("users2/{id}")]
+    public async Task<IActionResult> GetUserById2(string id)
+    {
+        try
+        {
+            var response = await _userService.GetUserById2(id);
+            return Ok(new
+            {
+                status = new
+                {
+                    code = "200",
+                    description = "User found"
+                },
+                data = response
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = new
+                {
+                    code = "400",
+                    description = ex.Message
+                }
+            });
+        }
+    }
     [HttpPut("users/{id}")]
     public async Task<IActionResult> EditUserById([FromBody] EditUserDTORequest request, string id)
     {

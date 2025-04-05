@@ -94,7 +94,9 @@ import Swal from 'sweetalert2';
           text: 'User added successfully!',
           icon: 'success',
           confirmButtonText: 'OK'
-        });
+        }).then(()=>{
+          window.location.reload();
+        })
         this.dialogRef.close();
       },error=>{
         console.log('Error add user',error)

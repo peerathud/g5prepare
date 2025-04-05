@@ -14,8 +14,6 @@
    
     <div class="Table">
         <table>
-          
-
             <tbody class="test">
 
                 <tr *ngFor="let user of allUsers">
@@ -31,11 +29,11 @@
                     <td>{{user.role.roleName}}</td>
                     <td>
                         <div class="action">
-                           <span class="material-symbols-outlined icon clickable" (click)="editUser()">
+                           <span class="material-symbols-outlined icon clickable" (click)="editUser(user.userId)">
                                 border_color
                             </span>
                         
-                            <span class="material-symbols-outlined  clickable" (click)="deleteUser()">
+                            <span class="material-symbols-outlined  clickable" (click)="deleteUser(user.userId)">
                                 delete
                             </span>
                         </div>

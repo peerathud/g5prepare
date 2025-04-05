@@ -1,16 +1,15 @@
 <h2 mat-dialog-title>Add User</h2>
 <div mat-dialog-content class="dialog-container">
-    <form [formGroup]="userForm" (ngSubmit)="onAddUser()">
+    <form [formGroup]="userForm" (ngSubmit)="onEditUser()">
 
         <div class="input-container">
             <mat-form-field>
-                <!-- <mat-label>User ID </mat-label> -->
-                <input matInput formControlName="id" placeholder="User ID*">
+                <input matInput formControlName="id" placeholder="User ID*" [readonly]="true">
                 <mat-error *ngIf="userForm.get('userId')?.hasError('required')">User ID is required</mat-error>
             </mat-form-field>
             <div class="name">
                 <mat-form-field>
-                    <!-- <mat-label>Name </mat-label> -->
+                 
                     <input matInput formControlName="firstName" placeholder="First Name*">
                     <mat-error *ngIf="userForm.get('firstName')?.hasError('required')">First Name is
                         required</mat-error>
@@ -35,7 +34,7 @@
                             <mat-option value="employee">Employee</mat-option>
                             <mat-option value="admin">Admin</mat-option>
                             <mat-option value="superadmin">Super Admin</mat-option>
-                            <mat-option value="loremipsum">loremipsum</mat-option>
+                            <mat-option value="loremipsum">Test1</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -48,14 +47,11 @@
 
                 <mat-form-field>
                     <input matInput formControlName="password" type="password" placeholder="Password*">
-                    <mat-error *ngIf="userForm.get('password')?.hasError('required')">password is required</mat-error>
                 </mat-form-field>
 
                 <mat-form-field>
                     <input matInput formControlName="confirmPassword" type="password" placeholder="Confirm Password*">
-                    <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('required')">Confirm Password
-                        is required</mat-error>
-                        <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('mismatch')">Passwords do not match!</mat-error> <!-- แสดงข้อผิดพลาด mismatch -->
+                        <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('mismatch')">Passwords do not match!</mat-error>
                 </mat-form-field>
             </div>
 
@@ -89,7 +85,7 @@
     </table>
 </div>
 <div mat-dialog-actions class="btn">
-    <button mat-button (click)="onAddUser()" class="btnAddUser">Add User</button>
+    <button mat-button (click)="onEditUser()" class="btnEditUser">Save Changes</button>
     <button mat-button (click)="onCancel()" class="btnCancel">Cancel</button>
 
 </div>
