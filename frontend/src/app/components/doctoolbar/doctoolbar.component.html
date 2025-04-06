@@ -1,0 +1,58 @@
+<div class="toolbar">
+    <div class="search ">
+        <span class="material-symbols-outlined">search </span>
+        <input type="text" class="search-box" placeholder="search" [(ngModel)]="searchQuery" (keydown.enter)="onSearch()" >
+    </div>
+
+    
+
+    <div class="dropdown">
+        <mat-form-field class="custom-select" appearance="outline">
+            <mat-label>SortBy</mat-label>
+            <mat-select disableRipple class="selectfield" (selectionChange)="onSort()">
+              <mat-option value="asc">Ascending</mat-option>
+              <mat-option value="desc">Descending</mat-option>
+              
+            </mat-select>
+          </mat-form-field>
+    </div>
+
+    <div class="setting">
+        <span class="material-symbols-outlined">tune</span>
+    </div>
+</div>
+
+<div class="toolbar">
+    <div class="icon-group">
+        <button mat-icon-button><mat-icon>assignment</mat-icon></button>
+        <button mat-icon-button><mat-icon>fullscreen</mat-icon></button>
+        <button mat-icon-button><mat-icon>view_column</mat-icon></button>
+        <button mat-icon-button><mat-icon>print</mat-icon></button>
+        <button mat-icon-button><mat-icon>delete</mat-icon></button>
+      </div>
+    
+      
+      <div class="right-tools">
+        <mat-form-field appearance="outline">
+          <mat-select [(value)]="selectedMonth">
+            <mat-option value="thisMonth">This Month</mat-option>
+            <mat-option value="lastMonth">Last Month</mat-option>
+          </mat-select>
+        </mat-form-field>
+    
+
+
+        <mat-form-field appearance="outline">
+          <mat-select [(value)]=" selectedDocType ">
+            <mat-option value="doc">Documents</mat-option>
+            <mat-option value="pdf">PDF</mat-option>
+            <mat-option value="xls">Excel</mat-option>
+          </mat-select>
+        </mat-form-field>
+    
+        <button mat-icon-button class="btn-add">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+</div>
+

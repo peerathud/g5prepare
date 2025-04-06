@@ -1,0 +1,42 @@
+<div class="list">
+    <div class="headerList">
+        <p>List of Documents</p> 
+        <p class="subtitle">Lorem ipsum lorem uojuhn</p>
+          
+    </div>
+    
+   
+    <div class="Table">
+        <table class="doc-table">
+            <tbody>
+              <tr *ngFor="let doc of pagedDocuments">
+                <td><mat-icon color="primary">description</mat-icon></td>
+                <td>
+                  <div class="doc-title">{{ doc.title }}</div>
+                  <div class="doc-date">{{ doc.date|date }}</div>
+                </td>
+                <td>{{ doc.description }}</td>
+              
+                <td class="doc-actions">
+                  <button mat-icon-button (click)="editDoc(doc.id)" >
+                    <mat-icon >edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteDoc(doc.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        
+    </div>
+    <div class="paginator">
+        <mat-paginator
+        [length]="AllDocument.length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[2, 4,6]"
+        (page)="onPageChange($event)">
+      </mat-paginator>
+    </div>
+   
+</div>

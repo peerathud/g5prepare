@@ -7,7 +7,7 @@
     <button class="btn-user" (click)="openAddUser()">Add user +</button>
 
     <div class="dropdown">
-        <mat-form-field class="custom-select">
+        <mat-form-field class="custom-select" appearance="outline" >
             <mat-label>SortBy</mat-label>
             <mat-select disableRipple class="selectfield" [(ngModel)]="orderBy" (selectionChange)="onSort()">
               <mat-option value="firstname">Name</mat-option>
@@ -21,7 +21,7 @@
         <span class="material-symbols-outlined clickable" (click)="onChangeDirection('asc')"> arrow_downward</span>      </div>
     <div class="dropdown">
         <button class="dropdown-btn">Saved search ▼</button>
-      
+
     </div>
   
     <div class="setting">
