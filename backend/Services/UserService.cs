@@ -63,6 +63,24 @@ public class UesrService : IUserService
             _context.User_Permissions.AddRange(userPermissionsData);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
+            AddNewUserDTOResponse a = new AddNewUserDTOResponse(){
+                userId = newUser.userId,
+                firstName = newUser.firstName,
+                lastName = newUser.lastName,
+                email = newUser.email,
+                phone = newUser.phone,
+                role = new RoleResponse
+                {
+                    roleId = role.roleId,
+                    roleName = role.roleName,
+                },
+                username = newUser.username,
+                permissions = new List<PermissionsResponse> { new PermissionsResponse{
+                    permissionId = permission.permissionId,
+                    permissionName = permission.permissionName,
+                }
+                }
+            };
             return new AddNewUserDTOResponse
             {
                 userId = newUser.userId,

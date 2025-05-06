@@ -1,6 +1,6 @@
 
   import { CommonModule } from '@angular/common';
-  import { Inject } from '@angular/core';
+  import { Inject,Output,EventEmitter } from '@angular/core';
   import { Component, OnInit } from '@angular/core';
   import {MatDialogModule,MAT_DIALOG_DATA} from '@angular/material/dialog';
   import {MatDialogRef} from '@angular/material/dialog';
@@ -13,6 +13,7 @@
 import { AddUserPermissionRequest } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-edit-user',
@@ -39,6 +40,7 @@ export class EditUserComponent  implements OnInit {
         confirmPassword: ['',]
       });
     }
+    @Output() userupdated = new EventEmitter<void>();
     displayedColumns:string[]=['module','Read','Write','Delete']
   ngOnInit(): void {
       if(this.data&&this.data.userId){
@@ -132,6 +134,7 @@ this.permissionsData = [
                   icon: 'success',
                   confirmButtonText: 'OK'
                 });
+                this.userupdated.emit();
                 this.dialogRef.close();
                
       },error=>{

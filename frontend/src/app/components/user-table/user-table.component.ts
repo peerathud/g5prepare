@@ -84,6 +84,10 @@ export class UserTableComponent implements OnInit {
       maxHeight: '90vh',
       data: { userId: userId }  
     });
+    dialogRef.componentInstance.userupdated.subscribe(()=>{
+      console.log("edit user reload");
+      this.ngOnInit();
+    })
     dialogRef.afterClosed().subscribe((result)=>{
       if (result) {
         console.log('Edited user:', result);
